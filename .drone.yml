@@ -11,7 +11,7 @@ steps:
   commands:
   - . setup config
   - make pdns-apply
-  - make .drone-default
+  - docker-compose up -d --force-recreate
 volumes:
 - name: dockersock
   host:
