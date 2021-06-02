@@ -14,8 +14,8 @@ steps:
   - make .drone-default
   volumes:
   - name: dockersock
-  host:
-    path: /var/run/docker.sock
+    host:
+      path: /var/run/docker.sock
 
 volumes:
 - name: dockersock
