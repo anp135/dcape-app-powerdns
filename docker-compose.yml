@@ -1,0 +1,55 @@
+version: '2.1'
+
+services:
+  admin:
+    image: ${ADMIN_IMAGE}:${ADMIN_IMAGE_VER}
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    environment:
+      - SQLALCHEMY_DATABASE_URI=postgresql://${PGDATABASE}:${PGPASSWORD}@db/${PGUSER}
+      - GUINCORN_TIMEOUT=60
+      - GUNICORN_WORKERS=2
+      - GUNICORN_LOGLEVEL=DEBUG
+    restart: always
+
+    labels:
+      - traefik.enable=true
+      - dcape.traefik.tag=${DCAPE_TAG}
+      - traefik.http.routers.admin-pdns.rule=Host(`${APP_SITE}`)
+      - traefik.http.routers.admin-pdns.tls=${USE_TLS}
+      - traefik.http.routers.admin-pdns.tls.certresolver=letsEncrypt
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  pdns:
+    image: ${IMAGE}:${IMAGE_VER}
+    ports:
+      - "${PORTS}:53"
+      - "${PORTS}:53/udp"
+    restart: always
+    labels:
+      - traefik.enable=true
+      - dcape.traefik.tag=${DCAPE_TAG}
+      - traefik.http.services.pdns-backend.loadbalancer.server.port=8081
+      - traefik.http.routers.pdns.rule=Host(`${APP_SITE}`) && PathPrefix(`/pdns/`)
+      - traefik.http.middlewares.pdns-prefix.stripprefix.prefixes=/pdns
+      - traefik.http.routers.pdns.middlewares=pdns-prefix@docker
+      - traefik.http.routers.pdns.tls=${USE_TLS}
+      - traefik.http.routers.pdns.tls.certresolver=letsEncrypt
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    entrypoint: /usr/sbin/pdns_server
+    command:
+      --master=no --slave=yes --slave-cycle-interval=60 --daemon=no --chroot=/ --socket-dir=/var/run
+      --launch=bind --launch+=gpgsql --gpgsql-dbname=${PGDATABASE} --gpgsql-user=${PGUSER}
+      --gpgsql-host=db --gpgsql-password=${PGPASSWORD} --api=yes --api-key=${API_KEY}
+      --webserver --webserver-address=0.0.0.0 --webserver-port=8081 --webserver-allow-from=0.0.0.0/0
+
+networks:
+  default:
+    external:
+      name: ${DCAPE_NET}

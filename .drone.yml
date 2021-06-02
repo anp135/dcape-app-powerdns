@@ -1,0 +1,22 @@
+---
+kind: pipeline
+type: docker
+name: powerdns
+
+steps:
+
+- name: deploy_local
+  pull: never
+  image: ${DCAPE_COMPOSE}
+  commands:
+  - . setup config
+  - make pdns-apply
+  - docker-compose up -d --force-recreate
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
+
+volumes:
+- name: dockersock
+  host:
+    path: /var/run/docker.sock
