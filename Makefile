@@ -60,7 +60,7 @@ endif
 # Wait for postgresql container start
 docker-wait:
 	@echo -n "Checking PG is ready..." ; \
-	until [[ `docker inspect -f "{{.State.Health.Status}}" $$PG_CONTAINER` == healthy ]] ; do sleep 1 ; echo -n "." ; done
+	until [[ `docker inspect -f "{{.State.Health.Status}}" $(PG_CONTAINER)` == healthy ]] ; do sleep 1 ; echo -n "." ; done
 	@echo "Ok"
 
 # create user, db and load sql
