@@ -26,7 +26,7 @@ ADMIN_IMAGE_VER          ?= 0.2.3
 API_KEY         ?= $(shell < /dev/urandom tr -dc A-Za-z0-9 | head -c8; echo)
 
 # Path to schema.pgsql.sql in PowerDNS docker image
-PERSIST_FILES  ?= schema.pgsql.sql
+PERSIST_FILES = schema.pgsql.sql
 
 define CONFIG_CUSTOM
 # ------------------------------------------------------------------------------

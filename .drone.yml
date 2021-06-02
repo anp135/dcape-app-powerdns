@@ -11,9 +11,10 @@ steps:
   commands:
   - . setup config
   - make pdns-apply
-  - docker-compose up -d --force-recreate
+  - make .drone-default
   volumes:
   - name: dockersock
+  host:
     path: /var/run/docker.sock
 
 volumes:
