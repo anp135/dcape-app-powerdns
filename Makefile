@@ -73,3 +73,12 @@ pdns-apply: docker-wait
 <------>  cat schema.pgsql.sql | docker exec -i $(PG_CONTAINER) psql -U $(PGUSER) -d $(PGDATABASE) \
 <------>  || true ; \
 <------>fi
+
+## drop database and user
+db-drop: docker-wait
+        @echo "*** $@ ***"
+        @docker exec -it $$DCAPE_DB psql -U postgres -c "DROP DATABASE \"$$DB_NAME\";" || true
+        @docker exec -it $$DCAPE_DB psql -U postgres -c "DROP USER \"$$DB_USER\";" || true
+
+psql: docker-wait
+        @docker exec -it $$DCAPE_DB psql -U $$DB_USER -d $$DB_NAME
