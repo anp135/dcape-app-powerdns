@@ -76,9 +76,9 @@ pdns-apply: docker-wait
 
 ## drop database and user
 db-drop: docker-wait
-        @echo "*** $@ ***"
-        @docker exec -it $(PG_CONTAINER) psql -U postgres -c "DROP DATABASE \"$$DB_NAME\";" || true
-        @docker exec -it $(PG_CONTAINER) psql -U postgres -c "DROP USER \"$$DB_USER\";" || true
+<------>@echo "*** $@ ***"
+<------>@docker exec -it $(PG_CONTAINER) psql -U postgres -c "DROP DATABASE \"$$DB_NAME\";" || true
+<------>@docker exec -it $(PG_CONTAINER) psql -U postgres -c "DROP USER \"$$DB_USER\";" || true
 
 psql: docker-wait
         @docker exec -it $(PG_CONTAINER) psql -U $$DB_USER -d $$DB_NAME
