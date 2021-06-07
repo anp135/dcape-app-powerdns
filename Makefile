@@ -64,7 +64,7 @@ docker-wait:
 	@echo "Ok"
 # create user, db and load sql
 pdns-apply:
-<------>@echo "*** $@ ***" ;
+<------>@echo "*** $@ ***" ; \
 <------>docker exec -it $(PG_CONTAINER) psql -U postgres -c "CREATE USER \"$(PGUSER)\" WITH PASSWORD '$(PGPASSWORD)';" \
 <------>&& docker exec -it $(PG_CONTAINER) psql -U postgres -c "CREATE DATABASE \"$(PGDATABASE)\" OWNER \"$(PGUSER)\";" || db_exists=0 ; \
 <------>if [[ ! "$$db_exists" ]] ; then \
