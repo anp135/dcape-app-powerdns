@@ -62,8 +62,6 @@ docker-wait:
 	@echo -n "Checking PG is ready..." ; \
 	until [[ `docker inspect -f "{{.State.Health.Status}}" $(PG_CONTAINER)` == healthy ]] ; do sleep 1 ; echo -n "." ; done
 	@echo "Ok"
-
-# create user, db and load sql
 # create user, db and load sql
 pdns-apply:
 <------>@echo "*** $@ ***" ; \
@@ -77,8 +75,8 @@ pdns-apply:
 ## drop database and user
 db-drop: docker-wait
 <------>@echo "*** $@ ***"
-<------>@docker exec -it $(PG_CONTAINER) psql -U postgres -c "DROP DATABASE \"$$DB_NAME\";" || true
-<------>@docker exec -it $(PG_CONTAINER) psql -U postgres -c "DROP USER \"$$DB_USER\";" || true
+<------>@docker exec -it $(PG_CONTAINER) psql -U postgres -c "DROP DATABASE \"$$(PGDATABASE)\";" || true
+<------>@docker exec -it $(PG_CONTAINER) psql -U postgres -c "DROP USER \"$$(PGUSER)\";" || true
 
 psql: docker-wait
-        @docker exec -it $(PG_CONTAINER) psql -U $$DB_USER -d $$DB_NAME
+        @docker exec -it $(PG_CONTAINER) psql -U $$(PGUSER) -d $$(PGDATABASE)
