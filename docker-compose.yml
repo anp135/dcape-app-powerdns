@@ -17,9 +17,9 @@ services:
     labels:
       - traefik.enable=true
       - dcape.traefik.tag=${DCAPE_TAG}
-      - traefik.http.routers.admin-pdns.rule=Host(`${APP_SITE}`)
-      - traefik.http.routers.admin-pdns.tls=${USE_TLS}
-      - traefik.http.routers.admin-pdns.tls.certresolver=letsEncrypt
+      - traefik.http.routers.${APP_TAG}-admin.rule=Host(`${APP_SITE}`)
+      - traefik.http.routers.${APP_TAG}-admin.tls=${USE_TLS}
+      - traefik.http.routers.${APP_TAG}-admin.tls.certresolver=letsEncrypt
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -33,12 +33,13 @@ services:
     labels:
       - traefik.enable=true
       - dcape.traefik.tag=${DCAPE_TAG}
-      - traefik.http.services.pdns-backend.loadbalancer.server.port=8081
-      - traefik.http.routers.pdns.rule=Host(`${APP_SITE}`) && PathPrefix(`/pdns/`)
-      - traefik.http.middlewares.pdns-prefix.stripprefix.prefixes=/pdns
-      - traefik.http.routers.pdns.middlewares=pdns-prefix@docker
-      - traefik.http.routers.pdns.tls=${USE_TLS}
-      - traefik.http.routers.pdns.tls.certresolver=letsEncrypt
+      - traefik.http.services.${APP_TAG}-backend.loadbalancer.server.port=8081
+      - traefik.http.routers.${APP_TAG}-backend.rule=Host(`${APP_SITE}`) && PathPrefix(`/pdns/`)
+      - traefik.http.middlewares.${APP_TAG}-prefix.stripprefix.prefixes=/pdns
+      - traefik.http.routers.${APP_TAG}-backend.middlewares=${APP_TAG}-prefix@docker,${APP_TAG}-ipwhitelist
+      - traefik.http.routers.${APP_TAG}-backend.tls=${USE_TLS}
+      - traefik.http.routers.${APP_TAG}-backend.tls.certresolver=letsEncrypt
+      - traefik.http.middlewares.${APP_TAG}-ipwhitelist.ipwhitelist.sourcerange=100.64.20.0/24,46.61.137.0/24,100.64.21.10/24
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
