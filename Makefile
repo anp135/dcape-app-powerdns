@@ -36,6 +36,7 @@ ADMIN_IMAGE_VER ?= v0.2.4
 PERSIST_FILES ?= *.sql
 APP_TAG ?= pdns
 IP_WHITELIST ?= 10.0.0.0/8,192.168.0.0/16
+DB_INIT_SQL ?= $(APP_ROOT)/schema.pgsql.sql
 define CONFIG_CUSTOM
 # ------------------------------------------------------------------------------
 # PowerDNS settings DC_USED:$(DCAPE_DC_USED)
