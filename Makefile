@@ -29,7 +29,7 @@ USE_DB        ?= yes
 DCAPE_DC_USED ?= no
 USE_TLS ?= yes
 # DNS tcp/udp port
-PORTS       ?= 53
+PORTS       ?= 127.0.0.2:53
 ADMIN_IMAGE ?= ngoduykhanh/powerdns-admin
 ADMIN_IMAGE_VER ?= v0.2.4
 # Relative path to library sources from DCAPE/var
@@ -48,20 +48,6 @@ APP_SITE=$(APP_SITE)
 
 # Powerdns API key for DNS-01 ACME challenges
 API_KEY=$(API_KEY)
-
-# Database name
-PGDATABASE=$(PGDATABASE)
-# Database user name
-PGUSER=$(PGUSER)
-# Database user password
-PGPASSWORD=$(PGPASSWORD)
-
-# Docker details
-
-# Docker image name
-IMAGE=$(IMAGE)
-# Docker image tag
-IMAGE_VER=$(IMAGE_VER)
 
 # dcape container name prefix
 DCAPE_TAG=$(DCAPE_TAG)
@@ -97,5 +83,7 @@ endif
 
 db-init: db-create
 	@echo "*** $@ ***" ; \
-	 echo "*** db data load" ; \
-	 cat schema.pgsql.sql | docker exec -i $$PG_CONTAINER psql -U $$PGUSER -d $$PGDATABASE -f - ;
+	if [ "$$db_created" = "1" ] ; then \
+	  echo "*** db data load" ; \
+	  cat schema.pgsql.sql | docker exec -i $$PG_CONTAINER psql -U $$PGUSER -d $$PGDATABASE -f - ; \
+	fi
