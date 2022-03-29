@@ -20,6 +20,7 @@ services:
       - traefik.http.routers.${APP_TAG}-admin.rule=Host(`${APP_SITE}`)
       - traefik.http.routers.${APP_TAG}-admin.tls=${USE_TLS}
       - traefik.http.routers.${APP_TAG}-admin.tls.certresolver=letsEncrypt
+      - traefik.http.routers.${APP_TAG}-admin.middlewares=${APP_TAG}-ipwhitelist
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -39,7 +40,7 @@ services:
       - traefik.http.routers.${APP_TAG}-backend.middlewares=${APP_TAG}-prefix@docker,${APP_TAG}-ipwhitelist
       - traefik.http.routers.${APP_TAG}-backend.tls=${USE_TLS}
       - traefik.http.routers.${APP_TAG}-backend.tls.certresolver=letsEncrypt
-      - traefik.http.middlewares.${APP_TAG}-ipwhitelist.ipwhitelist.sourcerange=100.64.20.0/24,46.61.137.0/24,100.64.21.10/24
+      - traefik.http.middlewares.${APP_TAG}-ipwhitelist.ipwhitelist.sourcerange=${IP_WHITELIST}
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro

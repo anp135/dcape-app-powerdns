@@ -35,6 +35,7 @@ ADMIN_IMAGE_VER ?= v0.2.4
 # Relative path to library sources from DCAPE/var
 PERSIST_FILES ?= *.sql
 APP_TAG ?= pdns
+IP_WHITELIST ?= 10.0.0.0/8,192.168.0.0/16
 define CONFIG_CUSTOM
 # ------------------------------------------------------------------------------
 # PowerDNS settings DC_USED:$(DCAPE_DC_USED)
@@ -66,6 +67,7 @@ PERSIST_FILES=$(PERSIST_FILES)
 # Path to /opt/dcape/var. Used only outside drone
 DCAPE_ROOT=$(DCAPE_ROOT)
 APP_ROOT=$(APP_ROOT)
+IP_WHITELIST=$(IP_WHITELIST)
 
 endef
 
