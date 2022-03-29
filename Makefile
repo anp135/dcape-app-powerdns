@@ -68,6 +68,7 @@ PERSIST_FILES=$(PERSIST_FILES)
 DCAPE_ROOT=$(DCAPE_ROOT)
 APP_ROOT=$(APP_ROOT)
 IP_WHITELIST=$(IP_WHITELIST)
+DB_INIT_SQL=$(DB_INIT_SQL)
 
 endef
 
@@ -82,10 +83,3 @@ ifeq ($(shell test -e $(DCAPE_MAKEFILE) && echo -n yes),yes)
 else
   include /opt/dcape-app/Makefile
 endif
-
-db-init: db-create
-	@echo "*** $@ ***" ; \
-	if [ "$$db_created" = "1" ] ; then \
-	  echo "*** db data load" ; \
-	  cat schema.pgsql.sql | docker exec -i $$PG_CONTAINER psql -U $$PGUSER -d $$PGDATABASE -f - ; \
-	fi
